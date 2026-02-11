@@ -69,7 +69,9 @@ def utc_now_iso() -> str:
 
 
 def ensure_db(db_path: str):
-    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    db_dir = os.path.dirname(db_path)
+    if db_dir:
+        os.makedirs(db_dir, exist_ok=True)
     conn = sqlite3.connect(db_path)
     try:
         conn.executescript(SCHEMA_SQL)
@@ -127,7 +129,12 @@ def load_session_index(openclaw_home: str) -> Dict[str, Dict[str, Any]]:
     return by_session_id
 
 
-def parse_event_usage(line_obj: Dict[str, Any], session_meta: Dict[str, Any], source_file: str, line_no: int) -> Optional[Dict[str, Any]]:
+def parse_event_usage(
+    line_obj: Dict[str, Any],
+    session_meta: Dict[str, Any],
+    source_file: str,
+    line_no: int,
+) -> Optional[Dict[str, Any]]:
     if line_obj.get("type") != "message":
         return None
     msg = line_obj.get("message", {}) or {}
@@ -215,7 +222,8 @@ def ingest_jsonl_files(conn: sqlite3.Connection, openclaw_home: str):
                           cost_input, cost_output, cost_cache_read, cost_cache_write, cost_total,
                           source_file, source_line_no
                         ) VALUES (
-                          :event_ts, :ingest_ts, :agent_id, :session_id, :session_key, :channel, :chat_type, :origin_provider,
+                          :event_ts, :ingest_ts, :agent_id, :session_id,
+                          :session_key, :channel, :chat_type, :origin_provider,
                           :model_provider, :model, :api, :stop_reason,
                           :input_tokens, :output_tokens, :cache_read_tokens, :cache_write_tokens, :total_tokens,
                           :cost_input, :cost_output, :cost_cache_read, :cost_cache_write, :cost_total,

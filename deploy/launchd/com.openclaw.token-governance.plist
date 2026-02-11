@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.openclaw.token-governance</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/usr/bin/python3</string>
+      <string>/Users/CHANGE_ME/openclaw-token-governance-skill/src/collector.py</string>
+      <string>collect</string>
+      <string>--db</string>
+      <string>/Users/CHANGE_ME/openclaw-token-governance-skill/data/token_usage.db</string>
+      <string>--openclaw-home</string>
+      <string>/Users/CHANGE_ME/.openclaw</string>
+      <string>--interval-sec</string>
+      <string>1</string>
+      <string>--status-every</string>
+      <string>30</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/openclaw-token-governance.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/openclaw-token-governance.err.log</string>
+  </dict>
+</plist>

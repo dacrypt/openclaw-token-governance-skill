@@ -102,16 +102,36 @@ This enables segmentation by:
 
 ---
 
+## Quality and reliability
+
+- Automated CI on push/PR via GitHub Actions (`.github/workflows/ci.yml`)
+- Linting with Ruff
+- Unit tests for parsing, ingestion deduplication, snapshot ingestion, and CSV export
+
+Run locally:
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+ruff check src tests
+pytest
+```
+
 ## Open source project health
 
 - License: [MIT](./LICENSE)
+- Changelog: [CHANGELOG.md](./CHANGELOG.md)
 - Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
 - Code of Conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - Security policy: [SECURITY.md](./SECURITY.md)
+- Issue templates + PR template under `.github/`
 
 ## Skill packaging
 
 This repository includes `skill/SKILL.md` so it can be reused as an operational/observability skill.
+
+## Deployment
+
+See [docs/deployment.md](./docs/deployment.md) for long-running daemon setup and service templates.
 
 ## Roadmap
 

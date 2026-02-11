@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw Token Governance Collector
+After=network.target
+
+[Service]
+Type=simple
+User=CHANGE_ME
+WorkingDirectory=/opt/openclaw-token-governance-skill
+ExecStart=/usr/bin/python3 /opt/openclaw-token-governance-skill/src/collector.py collect --db /var/lib/openclaw-token-governance/token_usage.db --openclaw-home /home/CHANGE_ME/.openclaw --interval-sec 1 --status-every 30
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
