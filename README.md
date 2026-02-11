@@ -1,48 +1,48 @@
 # OpenClaw Token Governance Skill
 
-Observabilidad histórica de consumo de tokens/costo para OpenClaw, con granularidad por evento (casi en tiempo real), lista para Power BI / Grafana / SQL.
+Historical token and cost observability for OpenClaw, with event-level granularity (near real-time), ready for Power BI / Grafana / SQL.
 
-## Qué resuelve
+## What it solves
 
-- Registro histórico por **agente**, **sesión**, **modelo**, **canal** y **proveedor**
-- Tokens por evento: `input`, `output`, `cacheRead`, `cacheWrite`, `total`
-- Costos por evento (cuando OpenClaw los expone en `usage.cost`)
-- Snapshots de cuota/plan via `openclaw status --json --usage`
-- Exportación CSV para BI
+- Historical tracking by **agent**, **session**, **model**, **channel**, and **provider**
+- Event-level tokens: `input`, `output`, `cacheRead`, `cacheWrite`, `total`
+- Event-level costs (when OpenClaw exposes `usage.cost`)
+- Provider quota/plan snapshots via `openclaw status --json --usage`
+- CSV export for BI workflows
 
-> Nota importante: con plan ChatGPT Plus (USD$20), OpenClaw suele mostrar ventanas de uso/cuota (ej. 5h/día) y puede mostrar `plan: plus ($0.00)`. Eso **no** equivale a facturación API por token.
-
----
-
-## Arquitectura
-
-El colector lee:
-
-1. `~/.openclaw/agents/*/sessions/sessions.json` (metadatos de sesión/canal)
-2. `~/.openclaw/agents/*/sessions/*.jsonl` (eventos por turno, incluyendo `message.usage`)
-3. `openclaw status --json --usage` (snapshots de cuota del proveedor)
-
-Persistencia en SQLite:
-
-- `usage_events` (evento por respuesta del modelo)
-- `provider_usage_snapshots` (ventanas de cuota)
-- `collector_state` (offsets por archivo)
+> Important note: with ChatGPT Plus (USD $20), OpenClaw may show quota windows (e.g., 5h/day) and `plan: plus ($0.00)`. This is **not the same** as per-token API billing.
 
 ---
 
-## Requisitos
+## Architecture
+
+The collector reads:
+
+1. `~/.openclaw/agents/*/sessions/sessions.json` (session/channel metadata)
+2. `~/.openclaw/agents/*/sessions/*.jsonl` (turn-level events, including `message.usage`)
+3. `openclaw status --json --usage` (provider quota snapshots)
+
+SQLite persistence:
+
+- `usage_events` (one row per model response event)
+- `provider_usage_snapshots` (quota window snapshots)
+- `collector_state` (file offsets/checkpointing)
+
+---
+
+## Requirements
 
 - Python 3.9+
-- OpenClaw CLI accesible en PATH
+- OpenClaw CLI available in PATH
 
-## Instalación rápida
+## Quick start
 
 ```bash
 cd token-governance-skill
 python3 src/collector.py init --db ./data/token_usage.db
 ```
 
-## Modo daemon (1s)
+## Daemon mode (1s)
 
 ```bash
 python3 src/collector.py collect \
@@ -52,25 +52,25 @@ python3 src/collector.py collect \
   --status-every 30
 ```
 
-- `--interval-sec 1` = polling por segundo
-- `--status-every 30` = snapshot de cuota cada 30 ciclos
+- `--interval-sec 1` = poll every second
+- `--status-every 30` = quota snapshot every 30 loops
 
-## Exportación CSV (Power BI)
+## CSV export (Power BI)
 
 ```bash
 python3 src/collector.py export-csv --db ./data/token_usage.db --out-dir ./exports
 ```
 
-Importa en Power BI:
+Import into Power BI:
 
 - `exports/usage_events.csv`
 - `exports/provider_usage_snapshots.csv`
 
 ---
 
-## Campos clave para gobernanza
+## Governance-ready fields
 
-`usage_events` incluye:
+`usage_events` includes:
 
 - `event_ts`, `agent_id`, `session_id`, `session_key`
 - `channel`, `chat_type`, `origin_provider`
@@ -78,31 +78,27 @@ Importa en Power BI:
 - `input_tokens`, `output_tokens`, `cache_read_tokens`, `cache_write_tokens`, `total_tokens`
 - `cost_input`, `cost_output`, `cost_cache_read`, `cost_cache_write`, `cost_total`
 
-Esto te permite segmentar por:
+This enables segmentation by:
 
-- Agente vs canal
-- Modelo y proveedor
-- Horario/día/semana
-- Coste medio por respuesta
-- Tokens de caché vs tokens nuevos
-
----
-
-## Publicarlo como skill
-
-Este repo incluye `skill/SKILL.md` para usarlo como habilidad reutilizable de operación/observabilidad.
+- Agent vs channel
+- Model and provider
+- Time window (hour/day/week)
+- Average cost per response
+- Cached tokens vs new tokens
 
 ---
 
-## Estado actual GitHub
+## Skill packaging
 
-No puedo crear el repo remoto desde aquí hasta que `gh` esté autenticado en tu cuenta.
+This repository includes `skill/SKILL.md` so it can be reused as an operational/observability skill.
 
-Cuando hagas login:
+---
+
+## Publish to GitHub
+
+If needed on a fresh environment:
 
 ```bash
 gh auth login
-gh repo create <TU_USUARIO>/openclaw-token-governance-skill --public --source=. --remote=origin --push
+gh repo create <YOUR_USER>/openclaw-token-governance-skill --public --source=. --remote=origin --push
 ```
-
-También puedo hacerlo yo inmediatamente después del login.

@@ -1,39 +1,39 @@
 ---
 name: token-governance
-description: "Captura, historiza y exporta uso de tokens/costos de OpenClaw para gobernanza y BI (Power BI/Grafana)."
+description: "Capture, store, and export OpenClaw token/cost usage for governance and BI (Power BI/Grafana)."
 ---
 
 # Token Governance Skill
 
-Usa este skill para:
+Use this skill to:
 
-- Monitorear consumo de tokens casi en tiempo real (polling por segundo)
-- Registrar costo por evento cuando OpenClaw lo entrega
-- Auditar por agente/sesión/modelo/canal/proveedor
-- Exportar CSV para tableros
+- Monitor token consumption near real-time (1-second polling)
+- Track per-event cost when OpenClaw provides it
+- Audit usage by agent/session/model/channel/provider
+- Export CSV for dashboards and analytics
 
-## Comandos
+## Commands
 
-Inicializar DB:
+Initialize DB:
 
 ```bash
 python3 src/collector.py init --db ./data/token_usage.db
 ```
 
-Correr colector continuo:
+Run continuous collector:
 
 ```bash
 python3 src/collector.py collect --db ./data/token_usage.db --interval-sec 1 --status-every 30
 ```
 
-Exportar CSV:
+Export CSV:
 
 ```bash
 python3 src/collector.py export-csv --db ./data/token_usage.db --out-dir ./exports
 ```
 
-## Recomendación operacional
+## Operational recommendation
 
-- En servidores: correr como servicio (launchd/systemd)
-- En laptops: cron cada minuto con `--once` o daemon cuando esté encendido
-- Retención: mover DB por mes si crece mucho
+- Servers: run as a service (launchd/systemd)
+- Laptops: run via cron every minute with `--once`, or daemon mode while online
+- Retention: rotate DB monthly for long-term scale

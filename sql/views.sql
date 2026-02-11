@@ -1,4 +1,4 @@
--- View enfocada en BI
+-- BI-oriented view
 CREATE VIEW IF NOT EXISTS v_usage_events_enriched AS
 SELECT
   event_ts,
