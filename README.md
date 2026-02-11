@@ -2,6 +2,20 @@
 
 Historical token and cost observability for OpenClaw, with event-level granularity (near real-time), ready for Power BI / Grafana / SQL.
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
+
+## Why this project exists
+
+If you run multiple OpenClaw agents/channels/models, it becomes hard to answer:
+
+- Which agent is consuming most tokens?
+- Which model/provider drives cost?
+- Which channels or jobs are most expensive?
+- How does usage trend over time?
+
+This project creates a durable usage history for governance and analytics.
+
 ## What it solves
 
 - Historical tracking by **agent**, **session**, **model**, **channel**, and **provider**
@@ -88,17 +102,20 @@ This enables segmentation by:
 
 ---
 
+## Open source project health
+
+- License: [MIT](./LICENSE)
+- Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Code of Conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- Security policy: [SECURITY.md](./SECURITY.md)
+
 ## Skill packaging
 
 This repository includes `skill/SKILL.md` so it can be reused as an operational/observability skill.
 
----
+## Roadmap
 
-## Publish to GitHub
-
-If needed on a fresh environment:
-
-```bash
-gh auth login
-gh repo create <YOUR_USER>/openclaw-token-governance-skill --public --source=. --remote=origin --push
-```
+- [ ] Optional HTTP metrics endpoint (Prometheus format)
+- [ ] Built-in dashboard starter (Grafana/Metabase templates)
+- [ ] Optional Postgres sink for multi-node deployments
+- [ ] Retention and partition helpers
